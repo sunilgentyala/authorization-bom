@@ -1,0 +1,24 @@
+{
+  "abomVersion": "1.0.0",
+  "metadata": {
+    "id": "urn:uuid:9d1f6b0a-0000-4000-8000-000000000001",
+    "generatedAt": "2026-07-29T00:00:00Z",
+    "generator": { "name": "authorization-bom", "version": "0.1.0" }
+  },
+  "identities": [
+    { "id": "user:alice", "type": "human", "owner": "team-platform" }
+  ],
+  "resources": [
+    { "id": "resource:orders-api", "type": "api", "owner": "team-orders" }
+  ],
+  "grants": [
+    {
+      "id": "grant:0001",
+      "subjectRef": "user:alice",
+      "resourceRef": "resource:orders-api",
+      "authorityType": "direct",
+      "state": "declared",
+      "policyProvenance": { "source": "synthetic" }
+    }
+  ]
+}

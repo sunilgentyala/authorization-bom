@@ -1,0 +1,113 @@
+{
+  "abomVersion": "1.0.0",
+  "metadata": {
+    "id": "urn:uuid:9d1f6b0a-0000-4000-8000-000000000002",
+    "generatedAt": "2026-07-29T12:00:00Z",
+    "generator": { "name": "authorization-bom", "version": "0.1.0" },
+    "tenant": "tenant-acme",
+    "evidenceCutoff": "2026-07-29T11:55:00Z",
+    "privacy": {
+      "classification": "confidential",
+      "redactions": ["identities[].attributes.email"]
+    },
+    "relatedBoms": [
+      { "type": "sbom", "format": "cyclonedx", "ref": "sboms/orders-service.cdx.json" }
+    ]
+  },
+  "identities": [
+    { "id": "user:suresh", "type": "human", "displayName": "Suresh (approver)", "owner": "team-platform", "tenant": "tenant-acme" },
+    { "id": "workload:orders-service", "type": "workload", "owner": "team-orders", "tenant": "tenant-acme",
+      "credentials": [
+        { "id": "cred:orders-svc-token", "credentialType": "token", "issuer": "identity-provider", "issuedAt": "2026-07-29T00:00:00Z", "expiresAt": "2026-07-30T00:00:00Z" }
+      ]
+    },
+    { "id": "agent:reconciliation-agent", "type": "ai_agent", "owner": "team-orders", "tenant": "tenant-acme", "parentAgentRef": "workload:orders-service" }
+  ],
+  "resources": [
+    { "id": "resource:billing-db", "type": "data", "owner": "team-billing", "tenant": "tenant-acme", "sensitivity": "restricted" },
+    { "id": "resource:refund-tool", "type": "tool", "owner": "team-orders", "tenant": "tenant-acme", "sensitivity": "confidential" },
+    { "id": "resource:mcp-payments-server", "type": "mcp_server", "owner": "team-payments", "tenant": "tenant-acme" }
+  ],
+  "actions": [
+    { "id": "action:read-billing", "resourceRef": "resource:billing-db", "name": "read" },
+    { "id": "action:issue-refund", "resourceRef": "resource:refund-tool", "name": "invoke" }
+  ],
+  "grants": [
+    {
+      "id": "grant:1001",
+      "subjectRef": "workload:orders-service",
+      "resourceRef": "resource:billing-db",
+      "actionRefs": ["action:read-billing"],
+      "authorityType": "direct",
+      "state": "approved",
+      "policyProvenance": { "source": "kubernetes_rbac", "policyId": "role/billing-reader", "policyVersion": "3", "importedAt": "2026-07-29T00:00:00Z" },
+      "credentialRef": "cred:orders-svc-token",
+      "signature": { "algorithm": "Ed25519", "keyId": "issuer-key-1", "value": "BASE64SIGNATUREPLACEHOLDER==", "signedAt": "2026-07-29T00:05:00Z" },
+      "evidenceCompleteness": "complete"
+    },
+    {
+      "id": "grant:1004",
+      "subjectRef": "user:suresh",
+      "resourceRef": "resource:refund-tool",
+      "actionRefs": ["action:issue-refund"],
+      "authorityType": "direct",
+      "state": "approved",
+      "policyProvenance": { "source": "synthetic", "policyId": "role/refund-approver", "importedAt": "2026-07-29T00:00:00Z" },
+      "evidenceCompleteness": "complete"
+    },
+    {
+      "id": "grant:1002",
+      "subjectRef": "agent:reconciliation-agent",
+      "resourceRef": "resource:refund-tool",
+      "actionRefs": ["action:issue-refund"],
+      "authorityType": "delegated",
+      "state": "computed",
+      "policyProvenance": { "source": "mcp", "policyId": "mcp-payments-server:refund-tool", "importedAt": "2026-07-29T00:10:00Z" },
+      "delegationChain": [
+        { "hop": 0, "issuer": "user:suresh", "subject": "workload:orders-service", "audience": "resource:refund-tool", "expiresAt": "2026-07-29T18:00:00Z" },
+        { "hop": 1, "issuer": "workload:orders-service", "subject": "agent:reconciliation-agent", "audience": "resource:refund-tool",
+          "parentDelegationId": "hop-0", "expiresAt": "2026-07-29T12:00:00Z", "scopeReduction": ["action:issue-refund:amount>1000"] }
+      ],
+      "constraints": {
+        "temporal": { "notBefore": "2026-07-29T06:00:00Z", "notAfter": "2026-07-29T12:00:00Z" },
+        "contextual": { "requiredNetwork": "internal-vpc" },
+        "conditions": ["amount <= 1000"]
+      },
+      "runtimeEvidence": [
+        { "observedAt": "2026-07-29T11:50:00Z", "eventType": "tool_invocation", "sourceLog": "mcp-gateway-log-4471", "withinDeclaredScope": true }
+      ],
+      "drift": { "detected": false },
+      "revocation": { "revoked": false },
+      "evidenceCompleteness": "complete"
+    },
+    {
+      "id": "grant:1003",
+      "subjectRef": "workload:orders-service",
+      "resourceRef": "resource:billing-db",
+      "actionRefs": ["action:read-billing"],
+      "authorityType": "direct",
+      "state": "revoked",
+      "policyProvenance": { "source": "kubernetes_rbac", "policyId": "role/billing-reader-legacy", "policyVersion": "2" },
+      "revocation": { "revoked": true, "revokedAt": "2026-07-28T00:00:00Z", "reason": "role superseded by v3" },
+      "drift": { "detected": true, "detectedAt": "2026-07-29T11:00:00Z", "description": "downstream cache still permits access 29h after revocation; propagation incomplete" },
+      "evidenceCompleteness": "partial"
+    }
+  ],
+  "toxicCombinations": [
+    {
+      "id": "toxic:0001",
+      "grantRefs": ["grant:1004", "grant:1002"],
+      "rule": "sod-approver-and-executor-same-chain",
+      "severity": "medium",
+      "detectedAt": "2026-07-29T12:00:00Z"
+    }
+  ],
+  "attestations": [
+    {
+      "id": "attestation:0001",
+      "predicateType": "https://abom.dev/attestation/manifest/v1",
+      "subjectRefs": ["grant:1001", "grant:1002", "grant:1003"],
+      "signature": { "algorithm": "Ed25519", "keyId": "issuer-key-1", "value": "BASE64SIGNATUREPLACEHOLDER==", "signedAt": "2026-07-29T12:00:05Z" }
+    }
+  ]
+}

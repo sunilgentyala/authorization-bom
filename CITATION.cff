@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "ABOM: Authorization Bill of Materials"
+version: 0.1.0
+date-released: "2026-07-29"
+license: Apache-2.0
+repository-code: "https://github.com/sunilgentyala/authorization-bom"
+authors:
+  - family-names: Gentyala
+    given-names: Sunil
+    email: sunil.gentyala@ieee.org
+  - family-names: Darisi
+    given-names: "Suresh Kumar"
+    # TODO: affiliation/email pending confirmation for this specific work -- not fabricated,
+    # left explicitly incomplete per project integrity rules (see docs/limitations.md).

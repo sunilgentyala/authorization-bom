@@ -1,0 +1,295 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sunilgentyala.github.io/authorization-bom/schema/abom-1.0.0.schema.json",
+  "title": "Authorization Bill of Materials (ABOM) 1.0.0",
+  "description": "Versioned schema for a portable authorization evidence manifest. Records identities, resources/actions, and grants distinguishing declared, approved, computed-effective, observed-runtime, exception, revoked, and unverified authorization state. Designed as a candidate profile for SPDX/CycloneDX-style ecosystems, not a competing standard.",
+  "type": "object",
+  "required": ["abomVersion", "metadata", "identities", "resources", "grants"],
+  "additionalProperties": false,
+  "properties": {
+    "abomVersion": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Schema version. Consumers must reject documents with an unrecognized major version."
+    },
+    "metadata": { "$ref": "#/$defs/Metadata" },
+    "identities": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Identity" }
+    },
+    "resources": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Resource" }
+    },
+    "actions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Action" }
+    },
+    "grants": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Grant" }
+    },
+    "toxicCombinations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ToxicCombination" }
+    },
+    "attestations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Attestation" }
+    }
+  },
+  "$defs": {
+    "Metadata": {
+      "type": "object",
+      "required": ["id", "generatedAt", "generator"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "format": "uri-reference", "description": "URN or UUID identifying this specific manifest instance, e.g. urn:uuid:..." },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "generator": {
+          "type": "object",
+          "required": ["name", "version"],
+          "additionalProperties": false,
+          "properties": {
+            "name": { "type": "string" },
+            "version": { "type": "string" }
+          }
+        },
+        "tenant": { "type": "string", "description": "Tenant or organizational boundary this manifest was generated for." },
+        "evidenceCutoff": { "type": "string", "format": "date-time", "description": "Point in time this manifest's computed/observed data was captured through." },
+        "privacy": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "classification": { "type": "string", "enum": ["public", "internal", "confidential", "restricted"] },
+            "redactions": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Field paths that were redacted before export, e.g. identities[].attributes.email"
+            }
+          }
+        },
+        "relatedBoms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "ref"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "type": "string", "enum": ["sbom", "aibom", "saasbom", "cbom"] },
+              "format": { "type": "string", "enum": ["cyclonedx", "spdx", "oscal", "other"] },
+              "ref": { "type": "string", "description": "URI or file path to the related BOM document." }
+            }
+          }
+        }
+      }
+    },
+    "Identity": {
+      "type": "object",
+      "required": ["id", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["human", "workload", "service", "application", "ai_agent"] },
+        "displayName": { "type": "string" },
+        "owner": { "type": "string", "description": "Identity or team accountable for this principal; required for orphan detection." },
+        "tenant": { "type": "string" },
+        "attributes": { "type": "object", "additionalProperties": true },
+        "credentials": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Credential" }
+        },
+        "parentAgentRef": {
+          "type": "string",
+          "description": "For ai_agent identities invoked by another agent, the id of the invoking agent, enabling multi-hop agent graphs."
+        }
+      }
+    },
+    "Credential": {
+      "type": "object",
+      "required": ["id", "credentialType"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "credentialType": { "type": "string", "enum": ["token", "certificate", "api_key", "oidc_id_token", "ssh_key", "other"] },
+        "issuer": { "type": "string" },
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "revoked": { "type": "boolean", "default": false },
+        "revokedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Resource": {
+      "type": "object",
+      "required": ["id", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["api", "tool", "mcp_server", "data", "service", "downstream_agent", "kubernetes_object", "cloud_resource"] },
+        "displayName": { "type": "string" },
+        "owner": { "type": "string" },
+        "tenant": { "type": "string" },
+        "sensitivity": { "type": "string", "enum": ["public", "internal", "confidential", "restricted"] }
+      }
+    },
+    "Action": {
+      "type": "object",
+      "required": ["id", "resourceRef", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "resourceRef": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    },
+    "DelegationHop": {
+      "type": "object",
+      "required": ["hop", "issuer", "subject"],
+      "additionalProperties": false,
+      "properties": {
+        "hop": { "type": "integer", "minimum": 0 },
+        "issuer": { "type": "string" },
+        "subject": { "type": "string" },
+        "audience": { "type": "string" },
+        "parentDelegationId": { "type": "string" },
+        "nonce": { "type": "string" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "scopeReduction": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Actions dropped relative to the parent hop, evidencing authority attenuation."
+        }
+      }
+    },
+    "PolicyProvenance": {
+      "type": "object",
+      "required": ["source"],
+      "additionalProperties": false,
+      "properties": {
+        "source": { "type": "string", "enum": ["kubernetes_rbac", "opa", "cedar", "openfga", "oauth_scope", "mcp", "synthetic", "other"] },
+        "policyId": { "type": "string" },
+        "policyVersion": { "type": "string" },
+        "sourceRef": { "type": "string", "description": "Pointer to the originating fixture/document/adapter run." },
+        "importedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "temporal": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "notBefore": { "type": "string", "format": "date-time" },
+            "notAfter": { "type": "string", "format": "date-time" }
+          }
+        },
+        "contextual": { "type": "object", "additionalProperties": true, "description": "e.g. required network, device posture, MFA level." },
+        "conditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Free-text or policy-language condition expressions carried through from source system."
+        }
+      }
+    },
+    "RuntimeEvidenceEvent": {
+      "type": "object",
+      "required": ["observedAt", "eventType"],
+      "additionalProperties": false,
+      "properties": {
+        "observedAt": { "type": "string", "format": "date-time" },
+        "eventType": { "type": "string", "enum": ["tool_invocation", "api_call", "token_use", "denial", "approval_event"] },
+        "sourceLog": { "type": "string" },
+        "withinDeclaredScope": { "type": "boolean" }
+      }
+    },
+    "Grant": {
+      "type": "object",
+      "required": ["id", "subjectRef", "resourceRef", "authorityType", "state", "policyProvenance"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "subjectRef": { "type": "string", "description": "Identity id this grant applies to." },
+        "resourceRef": { "type": "string" },
+        "actionRefs": { "type": "array", "items": { "type": "string" } },
+        "authorityType": { "type": "string", "enum": ["direct", "inherited", "delegated", "conditional", "transitive"] },
+        "state": {
+          "type": "string",
+          "enum": ["declared", "approved", "computed", "observed", "exception", "revoked", "unverified"],
+          "description": "Distinguishes declared intent, human/process approval, computed effective closure, observed runtime use, an approved exception, revocation, or evidence that could not be verified."
+        },
+        "policyProvenance": { "$ref": "#/$defs/PolicyProvenance" },
+        "delegationChain": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DelegationHop" }
+        },
+        "constraints": { "$ref": "#/$defs/Constraints" },
+        "credentialRef": { "type": "string" },
+        "runtimeEvidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/RuntimeEvidenceEvent" }
+        },
+        "drift": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "detected": { "type": "boolean" },
+            "detectedAt": { "type": "string", "format": "date-time" },
+            "description": { "type": "string" }
+          }
+        },
+        "revocation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "revoked": { "type": "boolean" },
+            "revokedAt": { "type": "string", "format": "date-time" },
+            "reason": { "type": "string" },
+            "propagatedAt": { "type": "string", "format": "date-time", "description": "When revocation was observed to take effect in all dependent records; absence with revoked=true signals unresolved propagation." }
+          }
+        },
+        "signature": { "$ref": "#/$defs/Signature" },
+        "evidenceCompleteness": {
+          "type": "string",
+          "enum": ["complete", "partial", "missing"],
+          "description": "Explicit marker so missing evidence is never silently treated as 'no access'."
+        }
+      }
+    },
+    "ToxicCombination": {
+      "type": "object",
+      "required": ["id", "grantRefs", "rule"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "grantRefs": { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+        "rule": { "type": "string", "description": "Identifier of the separation-of-duty / toxic-combination rule that fired." },
+        "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+        "detectedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Signature": {
+      "type": "object",
+      "required": ["algorithm", "keyId", "value", "signedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": { "type": "string", "enum": ["HMAC-SHA256", "Ed25519", "ECDSA-P256-SHA256"] },
+        "keyId": { "type": "string" },
+        "value": { "type": "string" },
+        "signedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Attestation": {
+      "type": "object",
+      "required": ["id", "predicateType", "subjectRefs", "signature"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "predicateType": { "type": "string", "description": "e.g. https://abom.dev/attestation/manifest/v1, following in-toto-style predicate typing." },
+        "subjectRefs": { "type": "array", "items": { "type": "string" } },
+        "signature": { "$ref": "#/$defs/Signature" }
+      }
+    }
+  }
+}

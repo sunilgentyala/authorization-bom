@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: python -m pip install -e ".[dev]"
+      - name: Ruff
+        run: ruff check src/ tests/
+      - name: mypy
+        run: mypy src/authbom
+      - name: Bandit
+        run: bandit -r src/
+      - name: pytest
+        run: pytest tests/ --cov=authbom --cov-report=term-missing --cov-fail-under=85
+      - name: Validate schema examples
+        run: |
+          python -c "
+          import json, jsonschema, pathlib
+          schema = json.load(open('schema/abom.schema.json', encoding='utf-8'))
+          v = jsonschema.Draft202012Validator(schema)
+          for f in pathlib.Path('schema/examples').glob('*.json'):
+              doc = json.load(open(f, encoding='utf-8'))
+              errors = list(v.iter_errors(doc))
+              assert not errors, f'{f}: {errors}'
+              print(f, 'OK')
+          "

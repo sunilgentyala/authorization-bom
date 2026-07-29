@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ABOM &mdash; Authorization Bill of Materials</title>
+<meta name="description" content="A versioned, portable schema and reference toolkit for recording authorization state across human, workload, service, and AI-agent identities.">
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #131722;
+    --border: #232838;
+    --text: #e6e9f0;
+    --muted: #9aa3b5;
+    --accent: #5eb4ff;
+    --code-bg: #0e1118;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+  h1 { font-size: 2.1rem; margin-bottom: 0.25rem; }
+  .tagline { color: var(--muted); font-size: 1.05rem; margin-top: 0; }
+  .badges { margin: 1rem 0 2rem; }
+  .badges img { margin-right: 0.5rem; }
+  h2 { margin-top: 2.5rem; font-size: 1.3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+  code.inline { background: var(--code-bg); padding: 0.1rem 0.35rem; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  th, td { text-align: left; border-bottom: 1px solid var(--border); padding: 0.5rem 0.75rem; font-size: 0.95rem; }
+  th { color: var(--muted); font-weight: 600; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; }
+  .card h3 { margin: 0 0 0.4rem; font-size: 1rem; }
+  .card p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+  .callout {
+    background: var(--panel);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    color: var(--muted);
+  }
+  footer { margin-top: 4rem; color: var(--muted); font-size: 0.85rem; }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #ffffff;
+      --panel: #f6f7f9;
+      --border: #e3e6eb;
+      --text: #1a1d24;
+      --muted: #5b6472;
+      --accent: #0969da;
+      --code-bg: #f2f3f5;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ABOM</h1>
+  <p class="tagline">Authorization Bill of Materials &mdash; a portable evidence manifest for human, workload, service, and AI-agent access.</p>
+
+  <div class="badges">
+    <img src="https://github.com/sunilgentyala/authorization-bom/actions/workflows/ci.yml/badge.svg" alt="CI status">
+    <img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache 2.0 license">
+    <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+">
+  </div>
+
+  <div class="callout">
+    <strong>What this is, precisely:</strong> a schema and interoperability contribution, not a novel
+    detection algorithm. Effective-permission graphs, delegation-reachability analysis, and
+    separation-of-duty detection all have real prior art (commercial and academic) &mdash; disclosed
+    in the <a href="https://github.com/sunilgentyala/authorization-bom/blob/main/research/novelty_gate.md">novelty gate</a>.
+    What appears to be missing is a shared, versioned artifact recording authorization state itself
+    (declared / approved / computed / observed / revoked) across human, workload, service, and
+    AI-agent identities together.
+  </div>
+
+  <h2>Quick start</h2>
+  <pre><code>git clone https://github.com/sunilgentyala/authorization-bom.git
+cd authorization-bom
+python -m pip install -e ".[dev]"
+
+authbom generate --seed 42 --tenants 2 --output manifest.json
+authbom validate manifest.json
+authbom analyze manifest.json --now 2026-07-29T12:00:00 --output analysis.json
+authbom report analysis.json --format markdown --output report.md</code></pre>
+
+  <h2>CLI</h2>
+  <table>
+    <tr><th>Command</th><th>Purpose</th></tr>
+    <tr><td><code class="inline">authbom generate</code></td><td>Deterministic synthetic manifest for testing/benchmarking</td></tr>
+    <tr><td><code class="inline">authbom import</code></td><td>Parse a read-only source fixture (K8s RBAC, OPA, Cedar, OpenFGA, OAuth, MCP)</td></tr>
+    <tr><td><code class="inline">authbom validate</code></td><td>Validate against the ABOM JSON Schema</td></tr>
+    <tr><td><code class="inline">authbom sign</code> / <code class="inline">verify</code></td><td>HMAC-sign / verify grants and attestations</td></tr>
+    <tr><td><code class="inline">authbom diff</code></td><td>Diff two manifests' grants</td></tr>
+    <tr><td><code class="inline">authbom analyze</code></td><td>Effective-permission, delegation, drift, toxic-combination, revocation analysis</td></tr>
+    <tr><td><code class="inline">authbom reconcile</code></td><td>Merge observed runtime evidence into a manifest</td></tr>
+    <tr><td><code class="inline">authbom report</code></td><td>Render analysis as JSON / Markdown / SARIF</td></tr>
+  </table>
+
+  <h2>Documentation</h2>
+  <div class="cards">
+    <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/schema/abom.schema.json">Schema</a></h3><p>Versioned JSON Schema + example manifests</p></div>
+    <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/docs/formal_model.md">Formal model</a></h3><p>Effective-permission closure, drift, toxic combinations, revocation convergence</p></div>
+    <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/docs/threat_model.md">Threat model</a></h3><p>14 abuse cases and their mitigations</p></div>
+    <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/docs/limitations.md">Limitations</a></h3><p>Read this before relying on any specific claim</p></div>
+    <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/research/novelty_gate.md">Novelty gate</a></h3><p>What's genuinely new vs. prior art</p></div>
+    <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/research/benchmark_findings.md">Benchmark findings</a></h3><p>Including two disclosed negative/inconclusive results</p></div>
+  </div>
+
+  <h2>Status</h2>
+  <p>Alpha (0.1.0). Synthetic-benchmark-validated only; not yet evaluated against production
+  authorization estates.</p>
+
+  <footer>
+    <a href="https://github.com/sunilgentyala/authorization-bom">github.com/sunilgentyala/authorization-bom</a> &middot; Apache-2.0
+  </footer>
+</div>
+</body>
+</html>
