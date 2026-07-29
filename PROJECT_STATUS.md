@@ -3,9 +3,11 @@
 Last updated: 2026-07-29
 
 ## Current phase
-Phase 8 complete (implementation + benchmarks). Next: repository publication docs (Phase 8
-continued), then citation ledger (Phase 9) and manuscripts (Phase 10). See "Completed" below for
-full detail; PROJECT_STATUS.md is the authoritative resume point after any context compression.
+Repository published (github.com/sunilgentyala/authorization-bom, commit 10b1c4d, CI + Pages both
+green). Citation ledger complete (23 references, 18 DOI-verified). Next: manuscript phase
+(venue-neutral master, then IEEE/ACM/Elsevier versions) -- awaiting user direction on venue
+selection and author-detail finalization before drafting. See "Completed" below for full detail;
+PROJECT_STATUS.md is the authoritative resume point after any context compression.
 
 ## Completed
 - Phase 1: Workspace inspection, EXECUTION_PLAN.md, PROJECT_STATUS.md, HWAAM-collision disclosure and user decision recorded.
@@ -56,14 +58,29 @@ full detail; PROJECT_STATUS.md is the authoritative resume point after any conte
   fixture's own `base_time` (both fixed); the hand-written `full_example.json` illustrative toxic
   combination didn't actually match any real overlapping grant (fixed by adding grant:1004).
 
+## Repository record
+- URL: https://github.com/sunilgentyala/authorization-bom
+- Initial commit: 721eef7 ("Initial release: ABOM schema, reference implementation, tests, benchmarks")
+- Citation-ledger commit: 10b1c4d
+- Default branch: main. CI (Python 3.10-3.13 matrix, Ruff/mypy/Bandit/pytest --cov-fail-under=85)
+  and Pages deploy both verified green via `gh run list`/`gh run watch`.
+- Site: https://sunilgentyala.github.io/authorization-bom/
+
 ## Open questions (unresolved, to revisit)
-- Final defensible name: ABOM vs AuthBOM vs AzBOM — pending terminology/collision search (Task in progress).
-- Whether a standalone schema is justified vs. a CycloneDX/SPDX/OSCAL profile — pending novelty gate.
-- Target specific IEEE venue, ACM venue, and Elsevier-Scopus journal — not yet selected.
-- Second author Suresh Kumar Darisi's involvement/contribution statement for this specific paper — not yet confirmed with user; do not fabricate contribution details.
+- Target specific IEEE venue, ACM venue, and Elsevier-Scopus journal — not yet selected; needed
+  before drafting venue-specific manuscript versions (Elsevier journal choice additionally needs
+  live verification of current Scopus coverage, not assumed from memory).
+- Second author Suresh Kumar Darisi's affiliation/email/contribution statement — user explicitly
+  chose to leave as a placeholder (CITATION.cff has a TODO comment) rather than reuse unverified
+  details from the unrelated HWAAM paper. Must be resolved before any manuscript is submission-ready.
+- Whether to run a deeper, database-backed novelty-gate pass (IEEE Xplore/ACM DL/Scopus) before
+  final submission -- current novelty gate is web-search-only, disclosed as a limitation.
 
 ## Next actions
-1. Terminology/collision search for ABOM/AuthBOM/AzBOM/AIBOM/AgBOM (repos, package registries, patents, general web).
-2. Systematic literature/standards search per research/search_protocol.md, logged in research/search_log.csv.
-3. Build comparison matrix (research/comparison_matrix.md).
-4. Write novelty-gate verdict (research/novelty_gate.md) answering the 6 required questions.
+1. Get venue decisions (specific IEEE conference/journal, specific ACM venue, specific
+   Scopus-indexed Elsevier journal) and author-detail resolution from the user before drafting
+   manuscripts.
+2. Draft venue-neutral master manuscript (Task #13), sourcing every number from
+   benchmarks/results/benchmark_results.json and every citation from research/citation_ledger.md.
+3. Produce IEEE/ACM/Elsevier versions per their official templates (Tasks #14-16).
+4. Run AEGIS integrity checks + final submission-readiness checklist (Task #17).
