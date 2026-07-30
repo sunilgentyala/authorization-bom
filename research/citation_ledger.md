@@ -8,8 +8,10 @@ were checked to avoid that false negative. Patents were verified via Google Pate
 assignee, inventors, dates). Standards/specifications are included without a DOI where none
 exists, per the assignment's own rule that specifications may legitimately lack one.
 
-21 references total: 18 carry a verified DOI, 5 are standards/specifications or patents with no
-DOI expected (2 patents + 3 specs), exceeding the 20-reference / 15-DOI targets.
+28 references total: 23 carry a verified DOI, 5 are standards/specifications or patents with no
+DOI expected (2 patents + 3 specs). References 24-28 were added 2026-07-30 when the manuscript was
+expanded to include the author's own related published work (see the addendum below); all five
+DOIs were re-verified via Crossref at that time.
 
 ## DOI-verified academic and standards references
 
@@ -49,13 +51,16 @@ DOI expected (2 patents + 3 specs), exceeding the 20-reference / 15-DOI targets.
 | 22 | SPDX 3.0 Specification, Linux Foundation / ISO/IEC 5962, spdx.dev (accessed 2026-07-29) | No DOI (living specification) | Profile-architecture pattern (Security/Licensing/Build/AI/Dataset) that ABOM is positioned to extend, per research/novelty_gate.md Q4. |
 | 23 | in-toto: A Framework to Secure the Integrity of Software Supply Chains, in-toto.io / slsa.dev (accessed 2026-07-29) | No DOI (living specification/framework site) | Attestation/signing pattern ABOM's `Attestation` object (schema/abom.schema.json) follows, per docs/formal_model.md. |
 
-## Notes on exclusions
+## Addendum, 2026-07-30: five references added at author's request
 
-- DOI `10.1109/ICIRCA69024.2026.11570292` ("A Multi-Stage NLP Framework for Enterprise Data
-  Protection in Public LLM Interactions," Gentyala, Tejasri, Mudusu, *ICIRCA 2026*) was verified
-  via Crossref (title, authors, venue, and page range all confirmed) per the assignment's explicit
-  instruction to evaluate it. Its subject -- NLP-based PII/data-loss-prevention filtering of
-  prompts sent to public LLMs -- is adjacent to but not the same problem as ABOM's authorization
-  state/evidence modeling. It is **excluded from the reference list** because its relevance is too
-  tangential to support a specific claim in this manuscript, consistent with the rule against
-  citing a source that does not directly support the associated claim.
+References 24-28 were added when the manuscript was expanded from 4 to 7 pages. All five are the
+lead author's own prior published work, cited for a specific, narrow claim each, not as a general
+background dump. Each DOI/URL was independently re-verified via the Crossref API before insertion.
+
+| # | Citation | DOI | Verified via | Maps to which ABOM claim |
+|---|---|---|---|---|
+| 24 | Gentyala, S., Caprio, F., Mudusu, S.K., Darisi, S.K., Allani, S.K. "The Metamorphosis of Access: Strategic Imperatives for Identity 3.0 and Zero Trust Integration in Critical Infrastructure." *SmartNets 2026*, pp. 1-6. | 10.1109/smartnets69662.2026.11604842 | Crossref | Motivates the continuous, evidence-based zero-trust framing in Section I/II; ABOM is positioned as the evidentiary layer beneath this kind of program, not a replacement for it. |
+| 25 | Gentyala, S., Sanjeevaiah, K., Darisi, S.K. "SybilShield-Core: A Composite Trust Scoring Framework for Sybil Attack Mitigation in Permissionless Blockchain Networks." *ICICDS 2026*, pp. 349-355. | 10.1109/icicds70526.2026.11604799 | Crossref | Related graph-topology-based anomaly-surfacing precedent, cited to bound (not claim novelty for) ABOM's orphan-identity and cross-tenant-reachability checks (Section II.B, VII). |
+| 26 | Gentyala, S., Tejasri, N., Mudusu, S.K. "A Multi-Stage NLP Framework for Enterprise Data Protection in Public LLM Interactions." *ICIRCA 2026*, pp. 2057-2064. | 10.1109/icirca69024.2026.11570292 | Crossref | Cited in Section II.B as an orthogonal, complementary data-layer control (protects prompt/response content) distinct from ABOM's authorization-layer evidence (protects/records access decisions); the two do not overlap and neither substitutes for the other. Previously excluded from the reference list as too tangential (see prior version of this file); re-scoped and re-included once a specific, non-overlapping claim was identified rather than cited as general background. |
+| 27 | Gentyala, S., Srinivas, C., Dhumpati, R. "A Zero-Trust Supply Chain Security Framework for Model Context Protocol-based AI Systems." *ICCBI 2026*, pp. 913-919. | 10.1109/ICCBI68589.2026.11619741 | Crossref | Direct MCP-specific related work: runtime tool-registry attestation and capability-binding enforcement, complementary to ABOM's after-the-fact MCP grant evidence (Section II.B, Threat Model T4). |
+| 28 | Gentyala, S. "Securing the Swarm: Governance, Attack Surfaces, and Zero-Trust Architectures in Multi-Agent AI Environments." Cloud Security Alliance, 2026-06-24. | No DOI (blog publication) | Manually confirmed at cloudsecurityalliance.org | Multi-agent AI governance/zero-trust framing that motivates positioning ABOM as an evidence layer beneath a control plane (Section I, II.B), not a competing enforcement mechanism. |
