@@ -3,11 +3,13 @@
 Last updated: 2026-07-29
 
 ## Current phase
-Repository published (github.com/sunilgentyala/authorization-bom, commit 10b1c4d, CI + Pages both
-green). Citation ledger complete (23 references, 18 DOI-verified). Next: manuscript phase
-(venue-neutral master, then IEEE/ACM/Elsevier versions) -- awaiting user direction on venue
-selection and author-detail finalization before drafting. See "Completed" below for full detail;
-PROJECT_STATUS.md is the authoritative resume point after any context compression.
+All 17 planned tasks complete as of 2026-07-30. Repository published and green. Four manuscript
+versions drafted and build-validated (master DOCX, IEEE TPS 2026 anonymized DOCX, ACM TOPS LaTeX
+PDF, Elsevier Computers & Security LaTeX PDF). AEGIS integrity check run and investigated. See
+SUBMISSION_READINESS_CHECKLIST.md (in the private manuscript folder, not this repo) for the full
+list of what remains before an actual venue submission -- primarily author-detail finalization for
+Suresh Kumar Darisi and a database-backed novelty-gate re-verification. PROJECT_STATUS.md remains
+the authoritative resume point after any context compression.
 
 ## Completed
 - Phase 1: Workspace inspection, EXECUTION_PLAN.md, PROJECT_STATUS.md, HWAAM-collision disclosure and user decision recorded.
