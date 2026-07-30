@@ -9,10 +9,14 @@
   :root {
     --bg: #0b0d12;
     --panel: #131722;
+    --panel-2: #171c29;
     --border: #232838;
     --text: #e6e9f0;
     --muted: #9aa3b5;
     --accent: #5eb4ff;
+    --accent-dim: rgba(94,180,255,0.14);
+    --good: #6bcf9c;
+    --warn: #e8c56b;
     --code-bg: #0e1118;
   }
   * { box-sizing: border-box; }
@@ -23,12 +27,14 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
   }
-  .wrap { max-width: 880px; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
   h1 { font-size: 2.1rem; margin-bottom: 0.25rem; }
   .tagline { color: var(--muted); font-size: 1.05rem; margin-top: 0; }
   .badges { margin: 1rem 0 2rem; }
   .badges img { margin-right: 0.5rem; }
-  h2 { margin-top: 2.5rem; font-size: 1.3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  h2 { margin-top: 2.75rem; font-size: 1.3rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  h3 { font-size: 1rem; margin: 1.5rem 0 0.5rem; color: var(--text); }
+  p { color: var(--text); }
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
   code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
@@ -40,13 +46,19 @@
     overflow-x: auto;
   }
   code.inline { background: var(--code-bg); padding: 0.1rem 0.35rem; border-radius: 4px; }
-  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
-  th, td { text-align: left; border-bottom: 1px solid var(--border); padding: 0.5rem 0.75rem; font-size: 0.95rem; }
-  th { color: var(--muted); font-weight: 600; }
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.92rem; }
+  th, td { text-align: left; border-bottom: 1px solid var(--border); padding: 0.55rem 0.7rem; vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
   .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; }
   .card h3 { margin: 0 0 0.4rem; font-size: 1rem; }
   .card p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.9rem; margin: 1.25rem 0 1.5rem; }
+  .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; }
+  .stat .num { font-size: 1.5rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+  .stat .label { color: var(--muted); font-size: 0.8rem; margin-top: 0.15rem; }
   .callout {
     background: var(--panel);
     border-left: 3px solid var(--accent);
@@ -55,15 +67,43 @@
     margin: 1.5rem 0;
     color: var(--muted);
   }
+  .why-list { list-style: none; padding: 0; margin: 1rem 0; }
+  .why-list li {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1.1rem;
+    margin-bottom: 0.7rem;
+    color: var(--text);
+  }
+  .why-list b { color: var(--accent); }
+  .badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .badge.supported { color: var(--good); border-color: var(--good); background: rgba(107,207,156,0.1); }
+  .badge.negative { color: var(--muted); border-color: var(--border); background: var(--panel-2); }
+  .badge.inconclusive { color: var(--warn); border-color: var(--warn); background: rgba(232,197,107,0.1); }
+  .note { color: var(--muted); font-size: 0.88rem; }
   footer { margin-top: 4rem; color: var(--muted); font-size: 0.85rem; }
   @media (prefers-color-scheme: light) {
     :root {
       --bg: #ffffff;
       --panel: #f6f7f9;
+      --panel-2: #eef0f3;
       --border: #e3e6eb;
       --text: #1a1d24;
       --muted: #5b6472;
       --accent: #0969da;
+      --accent-dim: rgba(9,105,218,0.08);
+      --good: #1a7f4e;
+      --warn: #9a6b00;
       --code-bg: #f2f3f5;
     }
   }
@@ -78,6 +118,7 @@
     <img src="https://github.com/sunilgentyala/authorization-bom/actions/workflows/ci.yml/badge.svg" alt="CI status">
     <img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache 2.0 license">
     <img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+">
+    <img src="https://img.shields.io/badge/status-alpha%200.1.0-lightgrey.svg" alt="Alpha 0.1.0">
   </div>
 
   <div class="callout">
@@ -90,6 +131,62 @@
     AI-agent identities together.
   </div>
 
+  <div class="stats">
+    <div class="stat"><div class="num">1.0000</div><div class="label">corrected-engine precision (RQ1)</div></div>
+    <div class="stat"><div class="num">&lt;51ms</div><div class="label">full pipeline @ 228 grants (RQ6)</div></div>
+    <div class="stat"><div class="num">76 / 94%</div><div class="label">tests / statement coverage</div></div>
+    <div class="stat"><div class="num">14</div><div class="label">threat-model abuse cases (T1&ndash;T14)</div></div>
+    <div class="stat"><div class="num">5</div><div class="label">identity types in one schema</div></div>
+    <div class="stat"><div class="num">7</div><div class="label">authorization states tracked</div></div>
+  </div>
+
+  <h2>Why ABOM</h2>
+  <p class="note">The full comparison against standards, academic prior art, and commercial tooling is in
+  <a href="https://github.com/sunilgentyala/authorization-bom/blob/main/research/comparison_matrix.md">research/comparison_matrix.md</a>.
+  Three properties are what this project claims as advancing the state of the art, each stated at the
+  narrowest defensible scope &mdash; none of them requires a new detection algorithm.</p>
+  <ul class="why-list">
+    <li><b>Cross-identity-type coverage in one document.</b> No standard, product, or preprint found in the
+    novelty-gate review carries human, workload, service, and AI-agent identities inside the same
+    versioned, portable schema.</li>
+    <li><b>Full-lifecycle state, not a snapshot.</b> Declared, approved, computed, observed, exception,
+    revoked, and unverified are distinct, coexisting states, so a consumer sees not just what access
+    exists now but how it was arrived at and whether it was independently observed.</li>
+    <li><b>An evidence-completeness contract.</b> Every code path that cannot fully resolve a grant's
+    provenance marks it <code class="inline">partial</code> or <code class="inline">missing</code> rather
+    than silently defaulting to granted or denied &mdash; enforced in the engine and covered by dedicated
+    negative tests, not just stated as intent.</li>
+  </ul>
+
+  <h2>How ABOM compares</h2>
+  <h3>Standards / BOM ecosystem</h3>
+  <div class="table-scroll">
+  <table>
+    <tr><th>System</th><th>Identity model</th><th>Authorization state?</th><th>AI-agent / MCP</th></tr>
+    <tr><td>CycloneDX</td><td>Component/service-centric</td><td>No dedicated field found</td><td>No dedicated schema</td></tr>
+    <tr><td>SPDX 3.0</td><td>Element/relationship graph</td><td>Generic relations only</td><td>No profile found</td></tr>
+    <tr><td>OSCAL</td><td>Control-implementation centric</td><td>Not designed for per-identity state</td><td>No</td></tr>
+    <tr><td>in-toto / SLSA</td><td>Actor-per-build-step</td><td>Build-step authorization only</td><td>No</td></tr>
+    <tr><td><b>ABOM</b></td><td>Human / workload / service / agent</td><td>declared&hellip;revoked, unified</td><td>Native (MCP adapter)</td></tr>
+  </table>
+  </div>
+
+  <h3>Commercial CIEM / IGA / MCP-governance</h3>
+  <div class="table-scroll">
+  <table>
+    <tr><th>Product / category</th><th>Effective-permission graph</th><th>Non-human / AI-agent identity</th><th>Portable evidence export</th></tr>
+    <tr><td>Veza Access Graph</td><td>Yes, normalizes cloud/SaaS</td><td>Vendor-claimed at scale</td><td>Proprietary platform only</td></tr>
+    <tr><td>SailPoint ISC</td><td>Reporting-level SoD</td><td>Growing coverage</td><td>Proprietary</td></tr>
+    <tr><td>Saviynt</td><td>Transaction-level SoD (ERP)</td><td>Yes, per vendor pages</td><td>Proprietary</td></tr>
+    <tr><td>MCP gateway vendors</td><td>Runtime tool-level control</td><td>Core scope</td><td>Mostly proprietary logs</td></tr>
+    <tr><td><b>ABOM</b></td><td>Attenuation-corrected (RQ1)</td><td>First-class schema type</td><td>Open JSON Schema, signed</td></tr>
+  </table>
+  </div>
+  <p class="note">Commercial CIEM/IGA platforms already compute effective permissions and detect toxic
+  combinations at production scale &mdash; this project does not claim algorithmic novelty for those
+  functions. What none of them offer is a portable, open, cross-identity-type export format the way a
+  CycloneDX/SPDX component inventory travels across an ecosystem.</p>
+
   <h2>Quick start</h2>
   <pre><code>git clone https://github.com/sunilgentyala/authorization-bom.git
 cd authorization-bom
@@ -101,6 +198,7 @@ authbom analyze manifest.json --now 2026-07-29T12:00:00 --output analysis.json
 authbom report analysis.json --format markdown --output report.md</code></pre>
 
   <h2>CLI</h2>
+  <div class="table-scroll">
   <table>
     <tr><th>Command</th><th>Purpose</th></tr>
     <tr><td><code class="inline">authbom generate</code></td><td>Deterministic synthetic manifest for testing/benchmarking</td></tr>
@@ -112,15 +210,60 @@ authbom report analysis.json --format markdown --output report.md</code></pre>
     <tr><td><code class="inline">authbom reconcile</code></td><td>Merge observed runtime evidence into a manifest</td></tr>
     <tr><td><code class="inline">authbom report</code></td><td>Render analysis as JSON / Markdown / SARIF</td></tr>
   </table>
+  </div>
+
+  <h2>Benchmark highlights (RQ1&ndash;RQ6)</h2>
+  <p class="note">10 recorded seeds, synthetic multi-tenant fixtures, bounded to the tested environment.
+  Full methodology and raw numbers: <a href="https://github.com/sunilgentyala/authorization-bom/blob/main/research/benchmark_findings.md">research/benchmark_findings.md</a>.
+  Two results are reported honestly as negative or inconclusive rather than reframed as strengths.</p>
+  <div class="table-scroll">
+  <table>
+    <tr><th>RQ</th><th>Question</th><th>Result</th><th>Status</th></tr>
+    <tr><td>RQ1</td><td>Attenuation-corrected effective-permission accuracy</td><td>1.0000 precision/recall vs. 0.9745 naive precision</td><td><span class="badge supported">supported</span></td></tr>
+    <tr><td>RQ2</td><td>Chain-consistency reconstruction vs. depth (2&ndash;5 hops)</td><td>1.0000 clean rate at every tested depth</td><td><span class="badge negative">negative result</span></td></tr>
+    <tr><td>RQ3</td><td>Temporal-context vs. snapshot-diff drift detection</td><td>Identical scores &mdash; ablation was a no-op on current fixtures</td><td><span class="badge inconclusive">inconclusive</span></td></tr>
+    <tr><td>RQ4</td><td>Agent-inclusive vs. human-only separation-of-duty scope</td><td>2.00 mean violations surfaced vs. 0.00 human-only</td><td><span class="badge supported">supported</span></td></tr>
+    <tr><td>RQ5</td><td>Revocation convergence vs. estate size</td><td>Unresolved count scales with size; convergence time is a generator constant</td><td><span class="badge inconclusive">partially supported</span></td></tr>
+    <tr><td>RQ6</td><td>CLI-stage overhead vs. estate size</td><td>All 5 stages &lt;51ms at 228 grants, well under the 10s budget</td><td><span class="badge supported">supported</span></td></tr>
+  </table>
+  </div>
+
+  <h2>Threat model (14 abuse cases)</h2>
+  <p class="note">Full mitigations and disclosed residual risk per case: <a href="https://github.com/sunilgentyala/authorization-bom/blob/main/docs/threat_model.md">docs/threat_model.md</a>.
+  Cross-cutting stance: missing or unverifiable evidence is always marked explicitly incomplete, never
+  silently treated as granted or denied.</p>
+  <div class="table-scroll">
+  <table>
+    <tr><th>#</th><th>Abuse case</th><th>Mitigation</th></tr>
+    <tr><td>T1</td><td>Confused deputy</td><td>Attenuation-only delegation closure</td></tr>
+    <tr><td>T2</td><td>Privilege escalation via inheritance</td><td>Explicit inherited-edge traversal, hop cap</td></tr>
+    <tr><td>T3</td><td>Delegation / scope abuse</td><td>Privilege-amplification check</td></tr>
+    <tr><td>T4</td><td>Prompt-injection MCP tool misuse</td><td>withinDeclaredScope + drift detection</td></tr>
+    <tr><td>T5</td><td>Token theft and replay</td><td>Temporal / contextual constraint checks</td></tr>
+    <tr><td>T6</td><td>Orphaned identities</td><td>Owner resolution/revocation check</td></tr>
+    <tr><td>T7</td><td>Policy drift</td><td>Declared vs. observed snapshot comparison</td></tr>
+    <tr><td>T8</td><td>Cross-tenant access</td><td>Boundary-crossing edge flagging</td></tr>
+    <tr><td>T9</td><td>Excessive scopes</td><td>Dormant-grant drift detection</td></tr>
+    <tr><td>T10</td><td>Manifest tampering / rollback</td><td>Full-payload signatures</td></tr>
+    <tr><td>T11</td><td>Compromised signing key</td><td>Key-management hygiene, disclosed residual</td></tr>
+    <tr><td>T12</td><td>Time-of-check to time-of-use</td><td>Explicit evidenceCutoff staleness</td></tr>
+    <tr><td>T13</td><td>Revocation propagation failure</td><td>propagatedAt-absence signal</td></tr>
+    <tr><td>T14</td><td>Graph-expansion denial of service</td><td>Hop cap + cycle detection</td></tr>
+  </table>
+  </div>
 
   <h2>Documentation</h2>
   <div class="cards">
     <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/schema/abom.schema.json">Schema</a></h3><p>Versioned JSON Schema + example manifests</p></div>
     <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/docs/formal_model.md">Formal model</a></h3><p>Effective-permission closure, drift, toxic combinations, revocation convergence</p></div>
     <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/docs/threat_model.md">Threat model</a></h3><p>14 abuse cases and their mitigations</p></div>
+    <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/docs/architecture.md">Architecture</a></h3><p>Discover-Normalize-Compute-Attest-Observe-Reconcile-Analyze-Verify</p></div>
     <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/docs/limitations.md">Limitations</a></h3><p>Read this before relying on any specific claim</p></div>
     <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/research/novelty_gate.md">Novelty gate</a></h3><p>What's genuinely new vs. prior art</p></div>
+    <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/research/comparison_matrix.md">Comparison matrix</a></h3><p>Standards, academic, and commercial prior art, with evidence links</p></div>
+    <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/research/gap_analysis.md">Gap analysis</a></h3><p>RQ1&ndash;RQ6 hypotheses, baselines, rejection criteria</p></div>
     <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/research/benchmark_findings.md">Benchmark findings</a></h3><p>Including two disclosed negative/inconclusive results</p></div>
+    <div class="card"><h3><a href="https://github.com/sunilgentyala/authorization-bom/blob/main/research/citation_ledger.md">Citation ledger</a></h3><p>Every reference independently verified via Crossref/DataCite</p></div>
   </div>
 
   <h2>Status</h2>

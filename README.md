@@ -22,6 +22,29 @@ itself -- across declared/approved/computed/observed/revoked distinctions and ac
 workload, service, and AI-agent identity types together -- which is what this schema and tooling
 provide.
 
+## Why ABOM
+
+Three properties, each stated at the narrowest defensible scope and none requiring a new detection
+algorithm:
+
+- **Cross-identity-type coverage in one document.** No standard, product, or preprint found in the
+  novelty-gate review carries human, workload, service, and AI-agent identities inside the same
+  versioned, portable schema.
+- **Full-lifecycle state, not a snapshot.** `declared`, `approved`, `computed`, `observed`,
+  `exception`, `revoked`, and `unverified` are distinct, coexisting states, so a consumer sees not
+  just what access exists now but how it was arrived at and whether it was independently observed.
+- **An evidence-completeness contract.** Every code path that cannot fully resolve a grant's
+  provenance marks it `partial` or `missing` rather than silently defaulting to granted or denied --
+  enforced in `src/authbom/engine/` and covered by dedicated negative tests, not just stated intent.
+
+On the synthetic benchmark (10 seeds, `benchmarks/results/`): the attenuation-corrected
+effective-permission engine reaches 1.0000 precision/recall vs. a naive baseline's 0.9745
+precision (RQ1); agent-inclusive separation-of-duty analysis surfaces violations invisible to a
+human-only rule scope (RQ4); and the full generate/validate/sign/verify/analyze pipeline completes
+in under 51ms at the largest tested scale, 228 grants (RQ6). Two results are reported honestly as
+negative or inconclusive rather than reframed as strengths -- see
+[research/benchmark_findings.md](research/benchmark_findings.md).
+
 ## Quick start
 
 ```bash
